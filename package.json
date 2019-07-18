@@ -1,0 +1,64 @@
+{
+  "name": "nest-console",
+  "version": "5.7.0",
+  "description": "The nest console module eases the creation of beautiful and testable command line interfaces for applications base on nestjs framework.",
+  "keywords": [
+    "nestjs",
+    "nest",
+    "module",
+    "cli",
+    "console",
+    "command"
+  ],
+  "scripts": {
+    "prepare": "install-peers",
+    "build": "rm -rf ./dist && tsc"
+  },
+  "dependencies": {
+    "ascii-table-unicode": "^0.1.1",
+    "caporal": "^1.2.0",
+    "inquirer": "^6.5.0",
+    "lodash": "^4.17.14",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^6.0.3",
+    "@types/lodash": "^4.14.136",
+    "husky": "^3.0.0",
+    "install-peers-cli": "^2.0.0",
+    "lint-staged": "^9.2.0",
+    "prettier": "^1.18.2",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-sonarts": "^1.9.0",
+    "typescript": "^3.5.3"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^5.7.4",
+    "@nestjs/core": "^5.7.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --parser=typescript --write ./src/**/*.ts",
+      "node --stack_size=8192 --max-old-space-size=8192 ./node_modules/.bin/tslint -c tslint.json -e /sample/ -p tsconfig.json --fix",
+      "git add"
+    ]
+  },
+  "main": "./dist/index.js",
+  "prettier": {
+    "arrowParens": "always",
+    "bracketSpacing": true,
+    "jsxBracketSameLine": false,
+    "jsxSingleQuote": true,
+    "printWidth": 120,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  }
+}
