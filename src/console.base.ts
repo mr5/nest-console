@@ -60,12 +60,12 @@ export class ConsoleBase {
     return ret.checkbox
   }
 
-  table(title: string, data: ReadonlyArray<{ [key: string]: any }>) {
+  table(title: string, data: ReadonlyArray<{ [key: string]: any }>, heading: string[] = []) {
     const table = new AsciiTable(title)
     if (!data || data.length < 1) {
       return table
     }
-    const heading = Object.keys(data[0])
+    heading = heading || Object.keys(data[0])
     table.setHeading(heading)
     for (const row of data) {
       table.addRow(heading.map((key) => row[key]))

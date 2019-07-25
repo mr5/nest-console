@@ -1,6 +1,6 @@
 {
   "name": "nest-console",
-  "version": "5.7.0",
+  "version": "5.7.3",
   "description": "The nest console module eases the creation of beautiful and testable command line interfaces for applications base on nestjs framework.",
   "keywords": [
     "nestjs",
@@ -46,11 +46,11 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "prettier --parser=typescript --write ./src/**/*.ts",
-      "node --stack_size=8192 --max-old-space-size=8192 ./node_modules/.bin/tslint -c tslint.json -e /sample/ -p tsconfig.json --fix",
-      "git add"
+      "node --stack_size=8192 --max-old-space-size=8192 ./node_modules/.bin/tslint -c tslint.json -e /sample/** -p tsconfig.json --fix"
     ]
   },
   "main": "./dist/index.js",
+  "types": "dist/index.d.ts",
   "prettier": {
     "arrowParens": "always",
     "bracketSpacing": true,

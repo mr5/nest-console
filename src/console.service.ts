@@ -13,15 +13,18 @@ import {
 import { Constructor } from '@nestjs/common/utils/merge-with-values.util'
 import { Module } from '@nestjs/core/injector/module'
 import { Injector } from '@nestjs/core/injector/injector'
-import { Logger } from './defines'
+import { ConsoleRunOptions } from './defines'
 
 @Injectable()
 export class ConsoleService {
   private readonly instanceLoader = new Injector()
+  private callback?: Function
 
   constructor(private readonly modulesContainer: ModulesContainer, private readonly metadataScanner: MetadataScanner) {}
 
-  run(app: INestApplication, name: string, version: string, logger: Logger = console, args = process.argv) {
+  run(options: ConsoleRunOptions) {
+    const { app, name, version = 'v0.1.0', logger = console, args = process.argv, callback } = options
+    this.callback = callback
     caporal
       .name(name)
       .version(version)
@@ -101,7 +104,10 @@ export class ConsoleService {
           methodArgs.push(get(params, argInfo.path))
         }
         methodArgs.push(logger)
-        commandInstance[method].apply(commandInstance, methodArgs)
+        await commandInstance[method].apply(commandInstance, methodArgs)
+        if (this.callback) {
+          this.callback()
+        }
       })
     })
     return prog

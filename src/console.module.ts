@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { MetadataScanner } from '@nestjs/core/metadata-scanner'
 import { ConsoleService } from './console.service'
 

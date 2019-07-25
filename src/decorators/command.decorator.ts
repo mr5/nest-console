@@ -1,11 +1,11 @@
 import { DuplicatedArgumentDefinitionException, DuplicatedOptionDefinitionException } from '../exceptions'
 
-export const META_COMMAND = Symbol('Command')
-export const META_COMMAND_OPTIONS = Symbol('CommandOptions')
-export const META_COMMAND_ARGUMENTS = Symbol('CommandArguments')
+export const META_COMMAND = 'nest-console:command'
+export const META_COMMAND_OPTIONS = 'nest-console:command:options'
+export const META_COMMAND_ARGUMENTS = 'nest-console:command:arguments'
 
 export function Command(name: string, description?: string, alias?: string): MethodDecorator {
-  return (target: object, key: any, descriptor: PropertyDescriptor) => {
+  return (target: {}, key: any, descriptor: PropertyDescriptor) => {
     Reflect.defineMetadata(META_COMMAND, { name, description, alias }, target.constructor, descriptor.value.name)
     return descriptor
   }
@@ -20,8 +20,8 @@ export interface OptionMetaInfo {
 }
 
 export function Option(name: string, description: string, defaultValue?: any, required = false): ParameterDecorator {
-  return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
-    const options = Reflect.getMetadata(META_COMMAND_OPTIONS, target) || []
+  return (target: {}, propertyKey: string | symbol, parameterIndex: number) => {
+    const options = Reflect.getMetadata(META_COMMAND_OPTIONS, target.constructor, propertyKey) || []
     if (options.length > 0 && options.filter((option: OptionMetaInfo) => option.name === name).length > 0) {
       throw new DuplicatedOptionDefinitionException()
     }
@@ -45,7 +45,7 @@ export interface ArgumentMetaInfo {
 }
 
 export function Argument(name: string, description: string, defaultValue?: any): ParameterDecorator {
-  return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
+  return (target: {}, propertyKey: string | symbol, parameterIndex: number) => {
     const consoleArguments = Reflect.getMetadata(META_COMMAND_ARGUMENTS, target.constructor, propertyKey) || []
     if (
       consoleArguments.length > 0 &&
