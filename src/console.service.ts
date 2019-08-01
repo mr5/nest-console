@@ -41,7 +41,11 @@ export class ConsoleService {
     })
     caporal.parse(args)
   }
-
+  runP(options: Omit<ConsoleRunOptions, 'callback'>) {
+    return new Promise((resolve) => {
+      this.run(Object.assign(options, { callback: resolve }))
+    })
+  }
   addCommand(app: INestApplication, prog: Caporal, commandClass: Constructor<any>, module: Module) {
     const consoleMeta = Reflect.getMetadata(META_CONSOLE, commandClass)
 
@@ -92,21 +96,29 @@ export class ConsoleService {
       }
 
       command.action(async (args, options, logger) => {
-        const injectable = module.injectables.get(commandClass.name)
-        if (!injectable) {
-          throw new Error(`Can not get injectable: ${commandClass.name}`)
-        }
-        await this.instanceLoader.loadInstanceOfInjectable(injectable, module)
-        const commandInstance = injectable.instance
-        const methodArgs = []
-        const params = { args, options }
-        for (const argInfo of sortBy(argsInfo, 'parameterIndex')) {
-          methodArgs.push(get(params, argInfo.path))
-        }
-        methodArgs.push(logger)
-        await commandInstance[method].apply(commandInstance, methodArgs)
-        if (this.callback) {
-          this.callback()
+        try {
+          const injectable = module.injectables.get(commandClass.name)
+          if (!injectable) {
+            throw new Error(`Can not get injectable: ${commandClass.name}`)
+          }
+          await this.instanceLoader.loadInstanceOfInjectable(injectable, module)
+          const commandInstance = injectable.instance
+          const methodArgs = []
+          const params = { args, options }
+          for (const argInfo of sortBy(argsInfo, 'parameterIndex')) {
+            methodArgs.push(get(params, argInfo.path))
+          }
+          methodArgs.push(logger)
+          await commandInstance[method].apply(commandInstance, methodArgs)
+          if (this.callback) {
+            this.callback()
+          }
+        } catch (e) {
+          if (this.callback) {
+            this.callback(e)
+          } else {
+            throw e
+          }
         }
       })
     })

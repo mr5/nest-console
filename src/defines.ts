@@ -28,5 +28,5 @@ export interface ConsoleRunOptions {
   version: string
   logger?: Logger
   args?: string[]
-  callback?: () => void
+  callback?: (err?: Error) => void
 }
