@@ -35,6 +35,7 @@ export class ConsoleService {
         return
       }
       commands.map((component: Constructor<any>) => {
+        Injectable()(component)
         module.addInjectable(component)
         this.addCommand(app, caporal, component, module)
       })
@@ -60,7 +61,6 @@ export class ConsoleService {
       if (!commandMeta) {
         return
       }
-
       const command = prog.command(`${prefix}${commandMeta.name}`, commandMeta.description)
       if (commandMeta.alias) {
         command.alias(commandMeta.alias)
@@ -101,8 +101,9 @@ export class ConsoleService {
           if (!injectable) {
             throw new Error(`Can not get injectable: ${commandClass.name}`)
           }
-          await this.instanceLoader.loadInstanceOfInjectable(injectable, module)
-          const commandInstance = injectable.instance
+          this.instanceLoader.loadPrototype(injectable, module.injectables)
+          await this.instanceLoader.loadInjectable(injectable, module)
+          const commandInstance = app.get(commandClass)
           const methodArgs = []
           const params = { args, options }
           for (const argInfo of sortBy(argsInfo, 'parameterIndex')) {

@@ -6,7 +6,14 @@ import { ApplicationModule } from './app.module'
   app
     .select(ConsoleModule)
     .get(ConsoleService)
-    .run(app, 'nest-console sample', 'v1.0.0')
+    .run({
+      app,
+      name: 'nest-console sample',
+      version: 'v1.0.0',
+      callback: (err) => {
+        console.error(err)
+      },
+    })
 })()
 
 process.on('unhandledRejection', (reason, promise) => {
