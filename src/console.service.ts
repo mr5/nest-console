@@ -86,7 +86,7 @@ export class ConsoleService {
             parameterIndex: optionMeta.parameterIndex,
           })
           command.option(
-            `--${optionMeta.name}`,
+            `--${optionMeta.name} <${optionMeta.name}>`,
             optionMeta.description,
             undefined,
             optionMeta.defaultValue,
