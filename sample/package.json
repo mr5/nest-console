@@ -18,13 +18,14 @@
     "typescript": "^3.5.3"
   },
   "dependencies": {
-    "nest-console": "../",
-    "@nestjs/common": "^5.7.4",
-    "@nestjs/core": "^5.7.4",
+    "@nestjs/common": "^6.7.2",
+    "@nestjs/core": "^6.7.2",
+    "@nestjs/platform-express": "^6.7.2",
     "ascii-table-unicode": "^0.1.1",
-    "reflect-metadata": "^0.1.13",
     "caporal": "^1.2.0",
     "inquirer": "^6.5.0",
-    "lodash": "^4.17.14"
+    "lodash": "^4.17.14",
+    "nest-console": "../",
+    "reflect-metadata": "^0.1.13"
   }
 }
