@@ -1,6 +1,6 @@
 {
   "name": "nest-console",
-  "version": "6.7.2",
+  "version": "6.7.3",
   "description": "The nest console module eases the creation of beautiful and testable command line interfaces for applications base on nestjs framework.",
   "keywords": [
     "nestjs",
