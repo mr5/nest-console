@@ -94,7 +94,11 @@ export class ConsoleService {
             parameterIndex: optionMeta.parameterIndex,
           })
           if (optionMeta.required) {
-            command.requiredOption(`--${optionMeta.name} <${optionMeta.name}>`, optionMeta.description, optionMeta.defaultValue)
+            command.requiredOption(
+              `--${optionMeta.name} <${optionMeta.name}>`,
+              optionMeta.description,
+              optionMeta.defaultValue
+            )
           } else {
             command.option(`--${optionMeta.name} <${optionMeta.name}>`, optionMeta.description, optionMeta.defaultValue)
           }
