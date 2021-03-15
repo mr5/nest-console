@@ -1,7 +1,7 @@
 import { INestApplication, Injectable } from '@nestjs/common'
 import { ModulesContainer } from '@nestjs/core/injector'
 import { MetadataScanner } from '@nestjs/core/metadata-scanner'
-import * as caporal from 'caporal'
+import { Command } from 'commander'
 import { sortBy, get } from 'lodash'
 import {
   META_CONSOLE,
@@ -23,12 +23,17 @@ export class ConsoleService {
   constructor(private readonly modulesContainer: ModulesContainer, private readonly metadataScanner: MetadataScanner) {}
 
   run(options: ConsoleRunOptions) {
-    const { app, name, version = 'v0.1.0', logger = console, args = process.argv, callback } = options
+    const { app, name, version = 'v0.1.0', args = process.argv, callback } = options
+    const program = new Command()
+
     this.callback = callback
-    caporal
+    program
       .name(name)
       .version(version)
-      .logger(logger)
+      .configureOutput({
+        writeOut: (str: string) => console.log(str),
+        writeErr: (str: string) => console.error(str),
+      })
     this.modulesContainer.forEach((module) => {
       const commands = Reflect.getMetadata(META_MODULE_COMMANDS, module.metatype)
       if (!commands) {
@@ -37,17 +42,17 @@ export class ConsoleService {
       commands.map((component: Constructor<any>) => {
         Injectable()(component)
         module.addInjectable(component)
-        this.addCommand(app, caporal, component, module)
+        this.addCommand(app, program as any, component, module)
       })
     })
-    caporal.parse(args)
+    program.parse(args)
   }
   runP(options: Omit<ConsoleRunOptions, 'callback'>) {
     return new Promise((resolve) => {
       this.run(Object.assign(options, { callback: resolve }))
     })
   }
-  addCommand(app: INestApplication, prog: Caporal, commandClass: Constructor<any>, module: Module) {
+  addCommand(app: INestApplication, prog: Command, commandClass: Constructor<any>, module: Module) {
     const consoleMeta = Reflect.getMetadata(META_CONSOLE, commandClass)
 
     if (!consoleMeta) {
@@ -65,16 +70,19 @@ export class ConsoleService {
       if (commandMeta.alias) {
         command.alias(commandMeta.alias)
       }
-
       const argumentsMeta = Reflect.getMetadata(META_COMMAND_ARGUMENTS, commandClass, method)
       const argsInfo: Array<{ path: string[]; parameterIndex: number }> = []
       if (argumentsMeta) {
+        if (!prog.args) prog.args = []
         for (const argumentMeta of sortBy(argumentsMeta, 'parameterIndex')) {
           argsInfo.push({
             path: ['args', argumentMeta.name],
             parameterIndex: argumentMeta.parameterIndex,
           })
-          command.argument(argumentMeta.name, argumentMeta.description, undefined, argumentMeta.defaultValue)
+          command.arguments(argumentMeta.name).description('', {
+            [argumentMeta.name]: argumentMeta.description,
+          })
+          prog.args[argumentMeta.parameterIndex] = argumentMeta.defaultValue
         }
       }
 
@@ -85,13 +93,15 @@ export class ConsoleService {
             path: ['options', optionMeta.name],
             parameterIndex: optionMeta.parameterIndex,
           })
-          command.option(
-            `--${optionMeta.name} <${optionMeta.name}>`,
-            optionMeta.description,
-            undefined,
-            optionMeta.defaultValue,
-            optionMeta.required
-          )
+          if (optionMeta.required) {
+            command.requiredOption(
+              `--${optionMeta.name} <${optionMeta.name}>`,
+              optionMeta.description,
+              optionMeta.defaultValue
+            )
+          } else {
+            command.option(`--${optionMeta.name} <${optionMeta.name}>`, optionMeta.description, optionMeta.defaultValue)
+          }
         }
       }
 

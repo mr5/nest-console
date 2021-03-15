@@ -89,7 +89,6 @@
     "no-conditional-assignment": true,
     "no-console": [
       true,
-      "log",
       "time",
       "trace"
     ],
