@@ -1,7 +1,7 @@
 import { INestApplication, Injectable } from '@nestjs/common'
 import { ModulesContainer } from '@nestjs/core/injector'
 import { MetadataScanner } from '@nestjs/core/metadata-scanner'
-import { Command } from 'commander'
+import { program as caporal, Program } from '@caporal/core'
 import { sortBy, get } from 'lodash'
 import {
   META_CONSOLE,
@@ -14,7 +14,6 @@ import { Constructor } from '@nestjs/common/utils/merge-with-values.util'
 import { Module } from '@nestjs/core/injector/module'
 import { Injector } from '@nestjs/core/injector/injector'
 import { ConsoleRunOptions } from './defines'
-
 @Injectable()
 export class ConsoleService {
   private readonly instanceLoader = new Injector()
@@ -23,17 +22,13 @@ export class ConsoleService {
   constructor(private readonly modulesContainer: ModulesContainer, private readonly metadataScanner: MetadataScanner) {}
 
   run(options: ConsoleRunOptions) {
-    const { app, name, version = 'v0.1.0', args = process.argv, callback } = options
-    const program = new Command()
-
+    const { app, name, version = 'v0.1.0', logger = console, args = process.argv, callback } = options
     this.callback = callback
-    program
+
+    caporal
       .name(name)
       .version(version)
-      .configureOutput({
-        writeOut: (str: string) => console.log(str),
-        writeErr: (str: string) => console.error(str),
-      })
+      .logger(logger as any)
     this.modulesContainer.forEach((module) => {
       const commands = Reflect.getMetadata(META_MODULE_COMMANDS, module.metatype)
       if (!commands) {
@@ -42,17 +37,17 @@ export class ConsoleService {
       commands.map((component: Constructor<any>) => {
         Injectable()(component)
         module.addInjectable(component)
-        this.addCommand(app, program as any, component, module)
+        this.addCommand(app, caporal, component, module)
       })
     })
-    program.parse(args)
+    caporal.run(args.slice(2))
   }
   runP(options: Omit<ConsoleRunOptions, 'callback'>) {
     return new Promise((resolve) => {
       this.run(Object.assign(options, { callback: resolve }))
     })
   }
-  addCommand(app: INestApplication, prog: Command, commandClass: Constructor<any>, module: Module) {
+  addCommand(app: INestApplication, prog: Program, commandClass: Constructor<any>, module: Module) {
     const consoleMeta = Reflect.getMetadata(META_CONSOLE, commandClass)
 
     if (!consoleMeta) {
@@ -73,16 +68,15 @@ export class ConsoleService {
       const argumentsMeta = Reflect.getMetadata(META_COMMAND_ARGUMENTS, commandClass, method)
       const argsInfo: Array<{ path: string[]; parameterIndex: number }> = []
       if (argumentsMeta) {
-        if (!prog.args) prog.args = []
         for (const argumentMeta of sortBy(argumentsMeta, 'parameterIndex')) {
           argsInfo.push({
             path: ['args', argumentMeta.name],
             parameterIndex: argumentMeta.parameterIndex,
           })
-          command.arguments(argumentMeta.name).description('', {
-            [argumentMeta.name]: argumentMeta.description,
+          command.argument(argumentMeta.name, argumentMeta.description, {
+            validator: undefined,
+            default: argumentMeta.defaultValue,
           })
-          prog.args[argumentMeta.parameterIndex] = argumentMeta.defaultValue
         }
       }
 
@@ -93,19 +87,15 @@ export class ConsoleService {
             path: ['options', optionMeta.name],
             parameterIndex: optionMeta.parameterIndex,
           })
-          if (optionMeta.required) {
-            command.requiredOption(
-              `--${optionMeta.name} <${optionMeta.name}>`,
-              optionMeta.description,
-              optionMeta.defaultValue
-            )
-          } else {
-            command.option(`--${optionMeta.name} <${optionMeta.name}>`, optionMeta.description, optionMeta.defaultValue)
-          }
+          command.option(`--${optionMeta.name} <${optionMeta.name}>`, optionMeta.description, {
+            validator: undefined,
+            default: optionMeta.defaultValue,
+            required: optionMeta.required,
+          })
         }
       }
 
-      command.action(async (args, options, logger) => {
+      command.action(async ({ args, options, logger }) => {
         try {
           const injectable = module.injectables.get(commandClass.name)
           if (!injectable) {
