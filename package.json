@@ -17,8 +17,6 @@
   "dependencies": {
     "@caporal/core": "^2.0.2",
     "ascii-table-unicode": "^0.1.1",
-    "caporal": "^1.4.0",
-    "commander": "^7.1.0",
     "inquirer": "^6.5.0",
     "lodash": "^4.17.14",
     "reflect-metadata": "^0.1.13"
