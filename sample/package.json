@@ -24,7 +24,7 @@
     "ascii-table-unicode": "^0.1.1",
     "caporal": "^1.2.0",
     "inquirer": "^6.5.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "nest-console": "../",
     "reflect-metadata": "^0.1.13"
   }
