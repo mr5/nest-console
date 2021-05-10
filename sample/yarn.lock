@@ -382,21 +382,6 @@ caporal@^1.2.0:
     tabtab "^2.2.2"
     winston "^2.3.1"
 
-caporal@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/caporal/-/caporal-1.4.0.tgz#d6087b815e3df97c3a0f55dbb82850fae29ed585"
-  integrity sha512-3pWfIwKVdIbB/gWmpLloO6iGAXTRi9mcTinPOwvHfzH3BYjOhLgq2XRG3hKtp+F6vBcBXxMgCobUzBAx1d8T4A==
-  dependencies:
-    bluebird "^3.4.7"
-    cli-table3 "^0.5.0"
-    colorette "^1.0.1"
-    fast-levenshtein "^2.0.6"
-    lodash "^4.17.14"
-    micromist "1.1.0"
-    prettyjson "^1.2.1"
-    tabtab "^2.2.2"
-    winston "^2.3.1"
-
 chalk@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-3.0.0.tgz#3f73c2bf526591f574cc492c51e2456349f844e4"
@@ -529,11 +514,6 @@ colorette@1.0.1:
   resolved "https://registry.npm.taobao.org/colorette/download/colorette-1.0.1.tgz#434bad4bd70969c075162fec86ca55da36bf837c"
   integrity sha1-Q0utS9cJacB1Fi/shspV2ja/g3w=
 
-colorette@^1.0.1:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/colorette/-/colorette-1.2.2.tgz#cbcc79d5e99caea2dbf10eb3a26fd8b3e6acfa94"
-  integrity sha512-MKGMzyfeuutC/ZJ1cba9NqcNpfeqMUcYmyF1ZFY6/Cn7CNSAKx6a+s48sqLqyAiZuaP2TcqMhoo+dlwFnVxT9w==
-
 colornames@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/colornames/-/colornames-1.1.1.tgz#f8889030685c7c4ff9e2a559f5077eb76a816f96"
@@ -566,11 +546,6 @@ commander@^2.20.0:
   version "2.20.0"
   resolved "https://registry.npm.taobao.org/commander/download/commander-2.20.0.tgz#d58bb2b5c1ee8f87b0d340027e9e94e222c5a422"
   integrity sha1-1YuytcHuj4ew00ACfp6U4iLFpCI=
-
-commander@^7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-7.1.0.tgz#f2eaecf131f10e36e07d894698226e36ae0eb5ff"
-  integrity sha512-pRxBna3MJe6HKnBGsDyMv8ETbptw3axEdYHoqNh7gu5oDcew8fs0xnivZGm06Ogk8zGAJ9VX+OPEr2GXEQK4dg==
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -1513,10 +1488,10 @@ lodash@4.17.15:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
 
-lodash@^4.17.12, lodash@^4.17.14, lodash@^4.17.19, lodash@^4.3.0:
-  version "4.17.19"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
-  integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
+lodash@^4.17.12, lodash@^4.17.14, lodash@^4.17.21, lodash@^4.3.0:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 log-symbols@^1.0.2:
   version "1.0.2"
@@ -1709,12 +1684,10 @@ negotiator@0.6.2:
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
 nest-console@../:
-  version "6.7.3"
+  version "6.10.4"
   dependencies:
     "@caporal/core" "^2.0.2"
     ascii-table-unicode "^0.1.1"
-    caporal "^1.4.0"
-    commander "^7.1.0"
     inquirer "^6.5.0"
     lodash "^4.17.14"
     reflect-metadata "^0.1.13"
